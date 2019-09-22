@@ -9,7 +9,7 @@ module.exports = {
       CREATE TABLE cameras (
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         ip VARCHAR(100) NOT NULL,
-        name VARCHAR(255),
+        name VARCHAR(255) NOT NULL,
         createdOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
         CONSTRAINT uc__cameras__ip UNIQUE(ip),
