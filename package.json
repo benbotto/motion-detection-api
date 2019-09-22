@@ -12,26 +12,27 @@
     "start:debug": "tsc-watch -p tsconfig.build.json --onSuccess \"node --inspect-brk dist/main.js\"",
     "start:prod": "node dist/main.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate:up": "formn m -c ./connections.migrate.json up",
     "migrate:down": "formn m -c ./connections.migrate.json down",
     "migrate:create": "formn m -c ./connections.migrate.json create",
-    "generate": "formn g -c ./connections.migrate.json src/entity"
+    "generate": "formn g -c ./connections.migrate.json src/entity",
+    "test": "ts-node ./node_modules/.bin/jasmine --config=./jasmine.json --reporter=jasmine-console-reporter",
+    "test:debug": "node --inspect-brk=0.0.0.0:9229 -r ts-node/register ./node_modules/.bin/jasmine --config=./jasmine.json --reporter=jasmine-console-reporter",
+    "test:watch": "tsc-watch -p tsconfig.json --onSuccess \"npm run test\""
   },
   "dependencies": {
     "@nestjs/common": "^6.0.0",
     "@nestjs/core": "^6.0.0",
     "@nestjs/platform-express": "^6.0.0",
     "@types/express": "^4.17.1",
+    "@types/jasmine": "^3.4.0",
     "bsy-error": "^2.0.0",
     "bsy-validation": "^2.5.0",
     "formn": "^5.9.1",
     "formn-cli": "^1.2.0",
     "formn-nestjs-utils": "^1.4.0",
+    "jasmine": "^3.5.0",
+    "jasmine-console-reporter": "^3.1.0",
     "moment": "^2.24.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
@@ -39,31 +40,15 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",
-    "@types/jest": "24.0.11",
     "@types/node": "11.13.4",
     "@types/supertest": "2.0.7",
     "jest": "24.7.1",
     "prettier": "1.17.0",
     "supertest": "4.0.2",
-    "ts-jest": "24.0.2",
     "ts-node": "8.1.0",
     "tsc-watch": "2.2.1",
     "tsconfig-paths": "3.8.0",
     "tslint": "5.16.0",
     "typescript": "3.4.3"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "./coverage",
-    "testEnvironment": "node"
   }
 }
