@@ -1,0 +1,14 @@
+{
+  "host": {
+    "ENV": "MYSQL_HOST"
+  },
+  "user": "root",
+  "password": {
+    "ENV": "MYSQL_ROOT_PASSWORD"
+  },
+  "database": {
+    "ENV": "MYSQL_DATABASE"
+  },
+  "poolSize": 1
+}
+
