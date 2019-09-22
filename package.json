@@ -20,7 +20,7 @@
     "migrate:up": "formn m -c ./connections.migrate.json up",
     "migrate:down": "formn m -c ./connections.migrate.json down",
     "migrate:create": "formn m -c ./connections.migrate.json create",
-    "generate": "formn g -c ./connections.migrate.json src/entities"
+    "generate": "formn g -c ./connections.migrate.json src/entity"
   },
   "dependencies": {
     "@nestjs/common": "^6.0.0",
