@@ -11,6 +11,6 @@ export class Camera {
   @Column({isNullable: false, maxLength: 100, sqlDataType: 'varchar'})
   ip: string;
 
-  @Column({maxLength: 255, sqlDataType: 'varchar'})
+  @Column({isNullable: false, maxLength: 255, sqlDataType: 'varchar'})
   name: string;
 }
