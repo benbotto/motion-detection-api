@@ -48,4 +48,57 @@ describe('CamerasService()', () => {
       });
     });
   });
+
+  describe('.create()', () => {
+    let isUnqSpy: jasmine.Spy;
+    let insertSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      isUnqSpy = spyOn(cameraSvc, 'isUnique');
+      isUnqSpy.and.returnValue(Promise.resolve());
+
+      insertSpy = mockDC.getExecuter().insert as jasmine.Spy;
+    });
+
+    it('validates the camera.', async () => {
+      try {
+        const cam = new Camera();
+
+        await cameraSvc.create(cam);
+        expect(true).toBe(false);
+      }
+      catch (err) {
+        expect(err.name).toBe('ValidationErrorList');
+        // name and ip required.
+        expect(err.errors.length).toBe(2);
+      }
+    });
+
+    it('checks that the camera is unique.', async () => {
+      const cam = new Camera();
+
+      cam.name = 'fake';
+      cam.ip = '1.1.1.1';
+
+      await cameraSvc.create(cam);
+
+      expect(isUnqSpy).toHaveBeenCalledWith('fake', '1.1.1.1');
+    });
+
+    it('inserts the camera.', async () => {
+      const cam = new Camera();
+
+      cam.name = 'fake';
+      cam.ip = '1.1.1.1';
+
+      await cameraSvc.create(cam);
+
+      expect(insertSpy.calls.argsFor(0)[1]).toEqual({
+        name: cam.name,
+        ip: cam.ip
+      });
+
+      expect(cam.id).toBe(42);
+    });
+  });
 });

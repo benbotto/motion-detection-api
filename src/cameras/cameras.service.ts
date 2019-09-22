@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DuplicateError } from 'bsy-error';
 
-import { ConditionBuilder } from 'formn';
+import { ConditionBuilder, InsertModelValidator } from 'formn';
 import { CRUDService, DataContextManager } from 'formn-nestjs-utils';
 
 import { Camera } from '../entity/camera.entity';
@@ -36,5 +36,20 @@ export class CamerasService extends CRUDService<Camera> {
 
     if (cams.length)
       throw new DuplicateError('Duplicate camera.', 'name-ip', cams[0].id);
+  }
+
+  /**
+   * Create a camera.
+   */
+  async create(cam: Camera): Promise<Camera> {
+    const val = new InsertModelValidator();
+
+    await val.validate(cam, Camera);
+
+    return this.dataContext.beginTransaction(async () => {
+      await this.isUnique(cam.name, cam.ip);
+
+      return super.create(cam);
+    });
   }
 }
