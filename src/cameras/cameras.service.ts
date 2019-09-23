@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { DuplicateError } from 'bsy-error';
 
-import { ConditionBuilder, InsertModelValidator } from 'formn';
+import { ConditionBuilder, InsertModelValidator, UpdateModelValidator } from 'formn';
 import { CRUDService, DataContextManager } from 'formn-nestjs-utils';
 
 import { Camera } from '../entity/camera.entity';
@@ -50,6 +50,35 @@ export class CamerasService extends CRUDService<Camera> {
       await this.isUnique(cam.name, cam.ip);
 
       return super.create(cam);
+    });
+  }
+
+  /**
+   * Update a camera.
+   */
+  async updateModel(cam: Camera): Promise<Camera> {
+    const val = new UpdateModelValidator();
+
+    await val.validate(cam, Camera);
+
+    return this.dataContext.beginTransaction(async () => {
+      let name = cam.name;
+      let ip   = cam.ip;
+
+      // If name or ip is being updated then a dupe check is needed.
+      if (cam.name || cam.ip) {
+        // If name or ip is missing then pull by id for the dupe check.
+        if (!cam.name || !cam.ip) {
+          const exCam = await this.retrieveById(cam.id);
+
+          name = name || exCam.name;
+          ip   = ip   || exCam.ip;
+        }
+
+        await this.isUnique(name, ip, cam.id);
+      }
+
+      return super.updateModel(cam);
     });
   }
 }
