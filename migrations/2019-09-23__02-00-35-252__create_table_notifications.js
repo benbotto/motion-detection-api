@@ -10,6 +10,7 @@ module.exports = {
         id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
         createdOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         cameraId INT NOT NULL,
+        viewedOn DATETIME,
 
         CONSTRAINT fk_notifications__cameraId__cameras
           FOREIGN KEY idx_notifications__cameraId__cameras (cameraId)
