@@ -1,4 +1,6 @@
-import { Table, Column } from 'formn';
+import { Table, Column, OneToMany } from 'formn';
+
+import { Notification } from './notification.entity';
 
 @Table({name: 'cameras'})
 export class Camera {
@@ -13,4 +15,7 @@ export class Camera {
 
   @Column({isNullable: false, maxLength: 255, sqlDataType: 'varchar'})
   name: string;
+
+  @OneToMany<Camera, Notification>(() => Notification, (l, r) => [l.id, r.cameraId])
+  notifications: Notification[];
 }
