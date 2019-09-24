@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 
 import { FormnModule } from 'formn-nestjs-utils';
-import { ConnectionsFileReader } from 'formn';
 
 import { CamerasModule } from './cameras/cameras.module';
-import { NoticeModule } from './notice/notice.module';
+import { MailModule } from './mail/mail.module';
+import { NotificationsModule } from './notifications/notifications.module';
+
+import { ConnectionsFileReader } from 'formn';
 
 @Module({
   imports: [
@@ -13,7 +15,9 @@ import { NoticeModule } from './notice/notice.module';
         .readConnectionOptions('./connections.json')[0]),
 
     CamerasModule,
-    NoticeModule,
+    MailModule
+      .forRoot(process.env.SENDGRID_API_KEY),
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],
