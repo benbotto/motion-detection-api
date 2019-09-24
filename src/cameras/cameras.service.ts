@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DuplicateError } from 'bsy-error';
+import { DuplicateError, NotFoundError } from 'bsy-error';
 
 import { ConditionBuilder, InsertModelValidator, UpdateModelValidator } from 'formn';
 import { CRUDService, DataContextManager } from 'formn-nestjs-utils';
@@ -79,6 +79,43 @@ export class CamerasService extends CRUDService<Camera> {
       }
 
       return super.updateModel(cam);
+    });
+  }
+
+  /**
+   * Get a camera by IP.
+   */
+  async retrieveByIp(ip: string): Promise<Camera> {
+    const cond = new ConditionBuilder()
+      .eq('c.ip', ':ip', ip);
+
+    const cams = await this.retrieve(cond);
+
+    if (!cams.length)
+      throw new NotFoundError(`Camera not found by ip "${ip}."`);
+
+    return cams[0];
+  }
+
+  /**
+   * Create a camera if it's not found by ip.
+   */
+  createByIpIfNotFound(ip: string): Promise<Camera> {
+    return this.dataContext.beginTransaction(async () => {
+      try {
+        return await this.retrieveByIp(ip);
+      }
+      catch (err) {
+        if (err.name !== 'NotFoundError')
+          throw err;
+      }
+
+      const cam = new Camera();
+
+      cam.ip = ip;
+      cam.name = ip;
+
+      return this.create(cam);
     });
   }
 }

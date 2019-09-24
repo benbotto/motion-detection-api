@@ -200,4 +200,62 @@ describe('CamerasService()', () => {
       });
     });
   });
+
+  describe('.retrieveByIp()', () => {
+    let selectSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      selectSpy = mockDC.getExecuter().select as jasmine.Spy;
+    });
+
+    it('throws a NotFoundError if the camera is not found.', async () => {
+      try {
+        selectSpy.and.returnValue(Promise.resolve([]));
+        await cameraSvc.retrieveByIp('1.1.1.1');
+        expect(true).toBe(false);
+      }
+      catch (err) {
+        expect(err.name).toBe('NotFoundError');
+        expect(err.message).toBe('Camera not found by ip "1.1.1.1."');
+      }
+    });
+
+    it('returns the camera.', async () => {
+      selectSpy.and.returnValue(Promise.resolve([{'c.id': 42}]));
+
+      const cam = await cameraSvc.retrieveByIp('1.1.1.1');
+
+      expect(selectSpy.calls.argsFor(0)[1]).toEqual({ip: '1.1.1.1'});
+    });
+  });
+
+  describe('.createByIpIfNotFound()', () => {
+    let selectSpy: jasmine.Spy;
+    let insertSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      selectSpy = mockDC.getExecuter().select as jasmine.Spy;
+      insertSpy = mockDC.getExecuter().insert as jasmine.Spy;
+    });
+
+    it('returns the camera if it is found.', async () => {
+      selectSpy.and.returnValue(Promise.resolve([{'c.id': 42}]));
+
+      const cam = await cameraSvc.createByIpIfNotFound('1.1.1.1');
+
+      expect(selectSpy.calls.argsFor(0)[1]).toEqual({ip: '1.1.1.1'});
+      expect(insertSpy).not.toHaveBeenCalled();
+    });
+
+    it('inserts the camera if it is not found.', async () => {
+      selectSpy.and.returnValue(Promise.resolve([]));
+
+      const cam = await cameraSvc.createByIpIfNotFound('1.1.1.1');
+
+      expect(insertSpy.calls.argsFor(0)[1]).toEqual({
+        ip: '1.1.1.1',
+        name: '1.1.1.1',
+      });
+    });
+  });
 });
