@@ -1,6 +1,6 @@
 This is an API for iCamera-1000 cameras.  It handles notifications and motion detection posts.
 
-(It's a hobby project that my son and me, and runs on a raspberry.)
+(It's a hobby project that my son and I wrote, and runs on a raspberry.)
 
 ### Development
 
