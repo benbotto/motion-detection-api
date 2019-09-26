@@ -15,6 +15,7 @@ services:
     image: node:dubnium
     volumes:
       - .:/home/node/dev
+      - ./uploads:/home/node/dev/uploads
     container_name: motion-detection-dev
     ports:
       - "9229:9229"
