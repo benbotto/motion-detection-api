@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { get } from 'request-promise-native';
+
 import { CRUDService, DataContextManager } from 'formn-nestjs-utils';
 
 import { Camera } from '../entity/camera.entity';
@@ -35,16 +37,27 @@ export class NotificationsService extends CRUDService<Notification> {
 
       notification.cameraId = cam.id;
 
+      // TEMP: Make this better.  TODO
+      /*
+      const img = await get(`http://${cam.ip}/img/snapshot.cgi`, {encoding: null});
+
       const msg = {
         to: process.env.ADMIN_EMAIL,
         from: 'motion@busybin.com',
         subject: `Notification on ${cam.name}`,
         text: `Notification on ${cam.name}`,
+        attachments: [
+          {
+            content: img.toString('base64'),
+            type: 'image/jpeg',
+            filename: 'notification.jpeg',
+          }
+        ]
       };
 
       this.mailer.send(msg);
-      console.log('Sent');
-      console.log(msg);
+      console.log('sent');
+      */
 
       return super.create(notification);
     });
