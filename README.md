@@ -4,6 +4,13 @@ This is an API for iCamera-1000 cameras.  It handles notifications and motion de
 
 ### Development
 
+Make a directory for uploads and grant write access:
+
+```
+mkdir uploads
+chmod 777 uploads
+```
+
 Use the docker file to get a database and bash env.
 
 ```
