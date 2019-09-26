@@ -13,6 +13,9 @@ export class Notification {
   @Column({isPrimary: true, isGenerated: true, isNullable: false, sqlDataType: 'int'})
   id: number;
 
+  @Column({sqlDataType: 'datetime'})
+  viewedOn: Date;
+
   @ManyToOne<Notification, Camera>(() => Camera, (l, r) => [l.cameraId, r.id])
   camera: Camera;
 }
