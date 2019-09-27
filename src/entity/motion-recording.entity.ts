@@ -1,6 +1,7 @@
-import { Table, Column, ManyToOne } from 'formn';
+import { Table, Column, ManyToOne, OneToMany } from 'formn';
 
 import { Camera } from './camera.entity';
+import { Classification } from './classification.entity';
 
 @Table({name: 'motion_recordings'})
 export class MotionRecording {
@@ -21,4 +22,7 @@ export class MotionRecording {
 
   @ManyToOne<MotionRecording, Camera>(() => Camera, (l, r) => [l.cameraId, r.id])
   camera: Camera;
+
+  @OneToMany<MotionRecording, Classification>(() => Classification, (l, r) => [l.id, r.motionRecordingId])
+  classifications: Classification[];
 }
