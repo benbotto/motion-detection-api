@@ -11,6 +11,12 @@ services:
       - docker/motion-detection.env
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
+  mq:
+    image: rabbitmq:3-management
+    container_name: mq
+    ports:
+      - "15672:15672"
+
   dev:
     image: node:dubnium
     volumes:
@@ -30,3 +36,4 @@ services:
       - docker/motion-detection.env
     depends_on:
       - "db"
+      - "mq"
