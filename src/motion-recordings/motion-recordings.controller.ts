@@ -25,7 +25,7 @@ export class MotionRecordingsController {
     const rec    = new MotionRecording();
     rec.fileName = `${moment().format('YYYY-MM-DD_HH-mm-ss_SSS')}.mp4`;
 
-    await fs.writeFile(`uploads/${rec.fileName}`, body);
+    await fs.writeFile(`/var/motion/uploads/${rec.fileName}`, body);
 
     return this.motionRecordingsSvc
       .createForCamera(rec, req.connection.remoteAddress);
