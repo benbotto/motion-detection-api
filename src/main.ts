@@ -9,6 +9,7 @@ async function bootstrap() {
   // Custom error handler.
   app.useGlobalFilters(new BsyErrorHandlerFilter());
 
+  await app.startAllMicroservicesAsync();
   await app.listen(3000);
 }
 bootstrap();
