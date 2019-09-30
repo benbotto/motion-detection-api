@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 import { CRUDService, DataContextManager } from 'formn-nestjs-utils';
 
@@ -12,7 +13,8 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
   constructor(
     protected dataContext: DataContextManager,
     protected dao: MotionRecordingsDao,
-    protected camSvc: CamerasService) {
+    protected camSvc: CamerasService,
+    @Inject('CLASSIFY_MESSAGE_SERVICE') protected messenger: ClientProxy) {
 
     super(dao);
   }
@@ -20,8 +22,8 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
   /**
    * Create a motion recording record assigned to a camera by IP.
    */
-  createForCamera(rec: MotionRecording, ip: string): Promise<MotionRecording> {
-    return this.dataContext.beginTransaction(async () => {
+  async createForCamera(rec: MotionRecording, ip: string): Promise<MotionRecording> {
+    await this.dataContext.beginTransaction(async () => {
       // The camera is pulled by IP so that the cameraId can be set on the
       // recording.  If the camera does not exists, it's created (the ip is
       // used as the default name).
@@ -32,5 +34,11 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
 
       return super.create(rec);
     });
+
+    // Notify the object detection service of the new video.
+    this.messenger.send<MotionRecording>('classify', rec)
+      .subscribe();
+
+    return rec;
   }
 }
