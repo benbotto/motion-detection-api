@@ -1,5 +1,7 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 
+import { ClientsModule, Transport } from '@nestjs/microservices';
+
 import { CamerasModule } from '../cameras/cameras.module';
 
 import { raw } from 'body-parser';
@@ -10,6 +12,18 @@ import { MotionRecordingsController } from './motion-recordings.controller';
 
 @Module({
   imports: [
+    // Client for RabbitMQ.
+    ClientsModule
+      .register([{
+        name: 'CLASSIFY_MESSAGE_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.MQ_CONNECTION_STRING],
+          queue: process.env.MQ_NOTIFY_QUEUE,
+          queueOptions: {durable: false},
+        }
+      }]),
+
     CamerasModule,
   ],
   providers: [
