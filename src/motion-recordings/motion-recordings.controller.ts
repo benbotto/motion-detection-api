@@ -1,6 +1,7 @@
 import {
   Controller, Get, Post, Body, Param, ParseIntPipe, Delete, Req
 } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 
 import { Request } from 'express';
 
@@ -53,5 +54,16 @@ export class MotionRecordingsController {
   delete(@Param('id', new ParseIntPipe()) id: number): Promise<MotionRecording> {
     return this.motionRecordingsSvc
       .deleteById(id);
+  }
+
+  /**
+   * The motion-detection-classifier code sends this through RabbitMQ after a
+   * video is classified.  If there are no objects of interest in any frame,
+   * then the video is deleted.
+   */
+  @EventPattern('delete_motion_recording')
+  onDeleteEvent(rec: MotionRecording): Promise<MotionRecording> {
+    return this.motionRecordingsSvc
+      .deleteById(rec.id);
   }
 }
