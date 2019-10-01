@@ -1,3 +1,5 @@
+import { promises as fs } from 'fs';
+
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
@@ -40,5 +42,18 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
       .subscribe();
 
     return rec;
+  }
+
+  /**
+   * Delete a recording by ID and remove the file.
+   */
+  deleteById(id: number): Promise<MotionRecording> {
+    return this.dataContext.beginTransaction(async () => {
+      const rec = await this.retrieveById(id);
+
+      await fs.unlink(`/var/motion/uploads/${rec.fileName}`);
+
+      return super.deleteById(id);
+    });
   }
 }
