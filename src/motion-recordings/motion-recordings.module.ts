@@ -18,7 +18,7 @@ import { MotionRecordingsController } from './motion-recordings.controller';
         name: 'CLASSIFY_MESSAGE_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: [process.env.MQ_CONNECTION_STRING],
+          urls: [`amqp://${process.env.MQ_HOST}:${process.env.MQ_PORT}`],
           queue: process.env.MQ_NOTIFY_QUEUE,
           queueOptions: {durable: false},
         }
