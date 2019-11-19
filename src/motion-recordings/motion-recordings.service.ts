@@ -52,7 +52,7 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
   /**
    * Clean up recordings when they hit a threshold.
    */
-  async cleanup(): void {
+  async cleanup(): Promise<void> {
     const recordings = await this.retrieve();
     const threshold  = 5; // TODO:
 
@@ -61,10 +61,8 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
         .sort((l, r) => l.createdOn.getTime() - r.createdOn.getTime())
         .splice(recordings.length - threshold);
 
-      for (const recording of recordings) {
-        console.log('del', recording);
+      for (const recording of recordings)
         await this.deleteById(recording.id);
-      }
     }
   }
 
