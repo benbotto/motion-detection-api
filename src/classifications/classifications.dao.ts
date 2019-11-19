@@ -7,6 +7,6 @@ import { Classification } from '../entity/classification.entity';
 @Injectable()
 export class ClassificationsDao extends Dao<Classification> {
   constructor(private dcMgr: DataContextManager) {
-    super(dcMgr, Classification, '');
+    super(dcMgr, Classification, 'c');
   }
 }
