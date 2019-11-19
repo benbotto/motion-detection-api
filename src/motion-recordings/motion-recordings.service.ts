@@ -34,7 +34,12 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
 
       rec.cameraId = cam.id;
 
-      return super.create(rec);
+      await super.create(rec);
+
+      // Clean up recordings in the background.
+      this.cleanup();
+
+      return rec;
     });
 
     // Notify the object detection service of the new video.
@@ -45,13 +50,37 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
   }
 
   /**
+   * Clean up recordings when they hit a threshold.
+   */
+  async cleanup(): void {
+    const recordings = await this.retrieve();
+    const threshold  = 5; // TODO:
+
+    if (recordings.length > threshold) {
+      recordings
+        .sort((l, r) => l.createdOn.getTime() - r.createdOn.getTime())
+        .splice(recordings.length - threshold);
+
+      for (const recording of recordings) {
+        console.log('del', recording);
+        await this.deleteById(recording.id);
+      }
+    }
+  }
+
+  /**
    * Delete a recording by ID and remove the file.
    */
   deleteById(id: number): Promise<MotionRecording> {
     return this.dataContext.beginTransaction(async () => {
       const rec = await this.retrieveById(id);
 
-      await fs.unlink(`/var/motion/uploads/${rec.fileName}`);
+      try {
+        await fs.unlink(`/var/motion/uploads/${rec.fileName}`);
+      }
+      catch (err) {
+        console.log(`Failed to delete "${rec.fileName}": ${err.message}`)
+      }
 
       return super.deleteById(id);
     });
