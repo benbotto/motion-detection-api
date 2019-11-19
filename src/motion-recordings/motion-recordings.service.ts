@@ -54,7 +54,7 @@ export class MotionRecordingsService extends CRUDService<MotionRecording> {
    */
   async cleanup(): Promise<void> {
     const recordings = await this.retrieve();
-    const threshold  = 5; // TODO:
+    const threshold  = +process.env.MAX_RECORDINGS;
 
     if (recordings.length > threshold) {
       recordings
