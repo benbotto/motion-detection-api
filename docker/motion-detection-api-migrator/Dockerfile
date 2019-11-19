@@ -43,4 +43,4 @@ COPY --from=build ["/var/node/node_modules", "./node_modules"]
 COPY --from=build ["/var/node/migrations", "./migrations"]
 
 # Wait for the database to come online, then migrate up.
-CMD sh -c "./wait-for ${MYSQL_HOST}:3306 -- npx formn m -c ./connections.migrate.json up"
+CMD sh -c "./wait-for -t 600 ${MYSQL_HOST}:3306 -- npx formn m -c ./connections.migrate.json up"

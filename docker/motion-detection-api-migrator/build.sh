@@ -8,20 +8,16 @@ fi
 
 TAG=$1
 
-# Cleanup.
-docker rmi avejidah/motion-detection-api-migrator:latest 2>/dev/null
-
-# Build, tagging as latest.
+# Build, tagging as latest-arm.
 docker build \
   --build-arg SSH_PRIVATE_KEY="$(<~/.ssh/id_rsa)" \
   --build-arg TAG="${TAG}" \
-  --no-cache \
-  -t avejidah/motion-detection-api-migrator:latest .
+  -t avejidah/motion-detection-api-migrator:latest-arm .
 
-# Push latest.
-docker push avejidah/motion-detection-api-migrator:latest
+# Push latest-arm.
+docker push avejidah/motion-detection-api-migrator:latest-arm
 
 # Tag with a tag matching the code repository.
-docker tag avejidah/motion-detection-api-migrator:latest \
-  avejidah/motion-detection-api-migrator:${TAG}
-docker push avejidah/motion-detection-api-migrator:${TAG}
+docker tag avejidah/motion-detection-api-migrator:latest-arm \
+  avejidah/motion-detection-api-migrator:${TAG}-arm
+docker push avejidah/motion-detection-api-migrator:${TAG}-arm
