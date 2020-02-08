@@ -53,4 +53,4 @@ USER node
 EXPOSE 3000
 
 # Wait for the database and MQ servers, then run the app.
-CMD sh -c "./wait-for -t 600 ${MYSQL_HOST}:3306 -- ./wait-for -t 300 ${MQ_HOST}:${MQ_PORT} -- forever main.js"
+CMD sh -c "./wait-for -t 600 ${MYSQL_HOST}:3306 -- ./wait-for -t 600 ${MQ_HOST}:${MQ_PORT} -- forever --minUptime 1000 --spinSleepTime 1000 main.js"
