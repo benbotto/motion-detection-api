@@ -1,6 +1,6 @@
 {
   "name": "motion-detection-api",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "API for iCam-1000 motion detection.",
   "author": "Ben D. Botto and Ben B. Botto",
   "repository": {
