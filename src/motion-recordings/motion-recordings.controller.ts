@@ -28,8 +28,16 @@ export class MotionRecordingsController {
 
     await fs.writeFile(`/var/motion/uploads/${rec.fileName}`, body);
 
-    return this.motionRecordingsSvc
-      .createForCamera(rec, req.connection.remoteAddress);
+    // remoteAddress is undefined if the socket is destroyed.
+    if (req.connection.remoteAddress) {
+      return this.motionRecordingsSvc
+        .createForCamera(rec, req.connection.remoteAddress);
+    }
+    else {
+      console.log('Remote address not set.');
+      console.log(`Saved video for debugging as ${rec.fileName}`);
+      return null;
+    }
   }
 
   @Get()
